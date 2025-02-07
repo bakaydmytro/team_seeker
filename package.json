@@ -27,6 +27,7 @@
     "mysql2": "^3.11.4",
     "node-steam-openid": "^1.2.4",
     "sequelize": "^6.37.5",
+    "socket.io": "^4.8.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.17.0"

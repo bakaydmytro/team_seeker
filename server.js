@@ -7,12 +7,17 @@ const cors = require("cors");
 const session = require("express-session");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./src/swagger");
-const swaggerDocs = require("./src/swagger")
+const swaggerDocs = require("./src/swagger");
+const { Server } = require("socket.io");
+const http = require("http");
+const server = http.createServer(app);
 
-const  corsOptions = {
-  credentials:true,
-  origin:['http://localhost:3000']
-}
+const io = new Server(server, {
+  cors: {
+      origin: "http://localhost:3000",
+      methods: ["GET", "POST"]
+  }
+});
 
 app.use(
   session({
@@ -23,7 +28,7 @@ app.use(
   })
 );
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -33,6 +38,14 @@ app.use("/api/users", require("./src/routes/userRoutes"));
 app.use(errorHandler);
 
 swaggerDocs(app);
+
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
+
+  socket.on("disconnect", () => {
+      console.log(`User disconnected: ${socket.id}`);
+  });
+});
 
 sequelize
   .authenticate()
